@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FF_Agent - FibreFlow Query Assistant</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .message { animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        const API_URL = 'http://localhost:8000';
+
+        function App() {
+            const [messages, setMessages] = useState([]);
+            const [input, setInput] = useState('');
+            const [loading, setLoading] = useState(false);
+            const [stats, setStats] = useState(null);
+            const messagesEndRef = useRef(null);
+
+            useEffect(() => {
+                // Load stats on mount
+                fetch(`${API_URL}/stats`)
+                    .then(res => res.json())
+                    .then(data => setStats(data))
+                    .catch(console.error);
+                
+                // Add welcome message
+                setMessages([{
+                    type: 'assistant',
+                    content: 'Welcome to FF_Agent! Ask me anything about your FibreFlow data.',
+                    timestamp: new Date()
+                }]);
+            }, []);
+
+            useEffect(() => {
+                messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+            }, [messages]);
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                if (!input.trim() || loading) return;
+
+                const question = input;
+                setInput('');
+                
+                // Add user message
+                setMessages(prev => [...prev, {
+                    type: 'user',
+                    content: question,
+                    timestamp: new Date()
+                }]);
+
+                setLoading(true);
+
+                try {
+                    const response = await fetch(`${API_URL}/query`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ question })
+                    });
+
+                    const data = await response.json();
+                    
+                    setMessages(prev => [...prev, {
+                        type: 'assistant',
+                        content: data,
+                        timestamp: new Date()
+                    }]);
+                } catch (error) {
+                    setMessages(prev => [...prev, {
+                        type: 'error',
+                        content: `Error: ${error.message}`,
+                        timestamp: new Date()
+                    }]);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            const formatData = (data) => {
+                if (!data || data.length === 0) return 'No data found';
+                
+                if (typeof data === 'string') return data;
+                
+                // Create table for array data
+                if (Array.isArray(data)) {
+                    const keys = Object.keys(data[0]);
+                    return (
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full table-auto text-sm">
+                                <thead className="bg-gray-100">
+                                    <tr>
+                                        {keys.map(key => (
+                                            <th key={key} className="px-4 py-2 text-left">{key}</th>
+                                        ))}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {data.slice(0, 20).map((row, i) => (
+                                        <tr key={i} className="border-b hover:bg-gray-50">
+                                            {keys.map(key => (
+                                                <td key={key} className="px-4 py-2">
+                                                    {row[key] ?? 'null'}
+                                                </td>
+                                            ))}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                            {data.length > 20 && (
+                                <p className="text-sm text-gray-500 mt-2">
+                                    ... and {data.length - 20} more rows
+                                </p>
+                            )}
+                        </div>
+                    );
+                }
+                
+                return JSON.stringify(data, null, 2);
+            };
+
+            const sampleQueries = [
+                "How many drops are in the system?",
+                "Show all projects",
+                "What's the pole status breakdown?",
+                "Top 5 poles with most drops"
+            ];
+
+            return (
+                <div className="max-w-7xl mx-auto p-4">
+                    {/* Header */}
+                    <div className="bg-white rounded-lg shadow-sm p-6 mb-4">
+                        <h1 className="text-3xl font-bold text-gray-800 mb-2">
+                            FF_Agent - FibreFlow Query Assistant
+                        </h1>
+                        {stats && (
+                            <div className="flex gap-6 text-sm text-gray-600">
+                                <span>📊 Projects: {stats.projects}</span>
+                                <span>🏠 Drops: {stats.sow_drops?.toLocaleString()}</span>
+                                <span>📍 Poles: {stats.sow_poles?.toLocaleString()}</span>
+                                <span>📡 Nokia Units: {stats.nokia_data}</span>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Sample Queries */}
+                    <div className="bg-white rounded-lg shadow-sm p-4 mb-4">
+                        <p className="text-sm text-gray-600 mb-2">Try these queries:</p>
+                        <div className="flex flex-wrap gap-2">
+                            {sampleQueries.map(q => (
+                                <button
+                                    key={q}
+                                    onClick={() => setInput(q)}
+                                    className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-sm hover:bg-blue-100"
+                                >
+                                    {q}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Messages */}
+                    <div className="bg-white rounded-lg shadow-sm p-6 mb-4 h-[500px] overflow-y-auto">
+                        {messages.map((msg, i) => (
+                            <div key={i} className={`message mb-4 ${msg.type === 'user' ? 'text-right' : ''}`}>
+                                <div className={`inline-block max-w-4xl ${
+                                    msg.type === 'user' ? 'bg-blue-500 text-white' : 
+                                    msg.type === 'error' ? 'bg-red-100 text-red-700' : 
+                                    'bg-gray-100'
+                                } rounded-lg p-4`}>
+                                    {msg.type === 'user' ? (
+                                        <p>{msg.content}</p>
+                                    ) : msg.type === 'assistant' && msg.content.success ? (
+                                        <div>
+                                            <p className="font-semibold mb-2">Results ({msg.content.row_count} rows):</p>
+                                            {formatData(msg.content.data)}
+                                            <details className="mt-2">
+                                                <summary className="cursor-pointer text-sm text-gray-500">
+                                                    View SQL
+                                                </summary>
+                                                <pre className="mt-2 p-2 bg-gray-800 text-white rounded text-xs overflow-x-auto">
+                                                    {msg.content.sql}
+                                                </pre>
+                                            </details>
+                                        </div>
+                                    ) : msg.type === 'assistant' && !msg.content.success ? (
+                                        <div>
+                                            <p className="text-red-600">Error: {msg.content.error}</p>
+                                        </div>
+                                    ) : (
+                                        <p>{msg.content}</p>
+                                    )}
+                                    <p className="text-xs mt-2 opacity-60">
+                                        {msg.timestamp.toLocaleTimeString()}
+                                    </p>
+                                </div>
+                            </div>
+                        ))}
+                        {loading && (
+                            <div className="text-center">
+                                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+                            </div>
+                        )}
+                        <div ref={messagesEndRef} />
+                    </div>
+
+                    {/* Input */}
+                    <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm p-4">
+                        <div className="flex gap-2">
+                            <input
+                                type="text"
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                placeholder="Ask about your FibreFlow data..."
+                                className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                disabled={loading}
+                            />
+                            <button
+                                type="submit"
+                                disabled={loading || !input.trim()}
+                                className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {loading ? 'Processing...' : 'Send'}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
