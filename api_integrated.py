@@ -19,7 +19,7 @@ import chromadb
 from chromadb.utils import embedding_functions
 
 # Import our components
-from ff_agent_vanna import FFAgentVanna
+from ff_agent_vanna import FF_Agent_Vanna
 from vector_store_cached import CachedVectorStore
 from feedback_system import FeedbackSystem
 
@@ -64,14 +64,8 @@ async def lifespan(app: FastAPI):
     try:
         # Initialize Vanna
         logger.info("Initializing Vanna agent...")
-        vanna_agent = FFAgentVanna(model_name='ff_agent_model')
-        vanna_agent.connect_to_postgres(
-            host=os.getenv('PGHOST'),
-            dbname=os.getenv('PGDATABASE'),
-            user=os.getenv('PGUSER'),
-            password=os.getenv('PGPASSWORD'),
-            port=int(os.getenv('PGPORT', 5432))
-        )
+        vanna_agent = FF_Agent_Vanna()  # No parameters needed
+        # Connection is already handled in the class initialization
         
         # Initialize Vector Store
         logger.info("Initializing Vector Store...")
@@ -236,7 +230,8 @@ async def process_query(request: QueryRequest):
         if request.use_vanna and vanna_agent and confidence < request.confidence_threshold:
             try:
                 logger.info("Trying Vanna agent...")
-                vanna_sql = vanna_agent.generate_sql(request.question)
+                # The vanna object is inside the FF_Agent_Vanna class
+                vanna_sql = vanna_agent.vn.generate_sql(request.question)
                 if vanna_sql:
                     sql = vanna_sql
                     confidence = 0.8  # Vanna typically has good confidence
@@ -343,7 +338,7 @@ async def submit_feedback(request: FeedbackRequest):
         
         # Train Vanna with correction
         if request.corrected_sql and vanna_agent:
-            vanna_agent.train(
+            vanna_agent.vn.train(
                 question=request.question,
                 sql=request.corrected_sql
             )
