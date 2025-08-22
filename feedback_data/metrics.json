@@ -1,0 +1,12 @@
+{
+  "total_queries": 13,
+  "successful_queries": 8,
+  "failed_queries": 3,
+  "corrected_queries": 1,
+  "avg_execution_time": 5.629001210286067,
+  "feedback_counts": {
+    "positive": 8,
+    "negative": 5,
+    "neutral": 0
+  }
+}

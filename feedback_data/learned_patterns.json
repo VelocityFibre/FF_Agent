@@ -1,0 +1,216 @@
+{
+  "successful_patterns": [
+    {
+      "entities": [
+        "personnel"
+      ],
+      "classification": "personnel",
+      "databases": [
+        "firebase"
+      ],
+      "sql_pattern": "firebase_query",
+      "performance": {
+        "execution_time": 0.5,
+        "row_count": 10
+      }
+    },
+    {
+      "entities": [
+        "project_codes"
+      ],
+      "classification": "infrastructure",
+      "databases": [
+        "postgresql"
+      ],
+      "sql_pattern": "simple_select",
+      "performance": {
+        "execution_time": 1.2,
+        "row_count": 100
+      }
+    },
+    {
+      "entities": [
+        "test"
+      ],
+      "classification": "test",
+      "databases": [],
+      "sql_pattern": "simple_select",
+      "performance": {
+        "execution_time": 1.0,
+        "row_count": 10
+      }
+    },
+    {
+      "entities": [
+        "personnel"
+      ],
+      "classification": "personnel",
+      "databases": [
+        "firebase"
+      ],
+      "sql_pattern": "firebase_query",
+      "performance": {
+        "execution_time": 16.98161482810974,
+        "row_count": 1
+      }
+    },
+    {
+      "entities": [
+        "measurements",
+        "infrastructure",
+        "aggregations"
+      ],
+      "classification": "infrastructure",
+      "databases": [
+        "postgresql"
+      ],
+      "sql_pattern": "simple_select",
+      "performance": {
+        "execution_time": 6.05440616607666,
+        "row_count": 1
+      }
+    },
+    {
+      "entities": [
+        "infrastructure",
+        "personnel",
+        "status_values"
+      ],
+      "classification": "hybrid",
+      "databases": [
+        "firebase",
+        "postgresql"
+      ],
+      "sql_pattern": "firebase_query",
+      "performance": {
+        "execution_time": 3.820289134979248,
+        "row_count": 1
+      }
+    },
+    {
+      "entities": [
+        "personnel"
+      ],
+      "classification": "personnel",
+      "databases": [
+        "firebase"
+      ],
+      "sql_pattern": "firebase_query",
+      "performance": {
+        "execution_time": 2.3507425785064697,
+        "row_count": 1
+      }
+    },
+    {
+      "entities": [
+        "infrastructure",
+        "project_codes",
+        "project_names",
+        "numeric"
+      ],
+      "classification": "infrastructure",
+      "databases": [
+        "postgresql",
+        "postgresql"
+      ],
+      "sql_pattern": "firebase_query",
+      "performance": {
+        "execution_time": 6.133342742919922,
+        "row_count": 1
+      }
+    }
+  ],
+  "error_patterns": [
+    {
+      "question_pattern": "other",
+      "entities": [
+        "equipment"
+      ],
+      "error": "Missing GROUP BY",
+      "sql_attempted": "SELECT pon_id, COUNT(*) FROM drops"
+    },
+    {
+      "question_pattern": "other",
+      "entities": [
+        "infrastructure",
+        "project_codes",
+        "project_names"
+      ],
+      "error": "(psycopg2.errors.SyntaxError) syntax error at or near \"**\"\nLINE 69: **Improvements Needed:**\n         ^\n\n[SQL: -- Query to identify drops associated with the Lawley project, showing potential issues.  We'll focus on status changes and Nokia data for signal strength indications.\n\nWITH LawleyDrops AS (\n    -- Select all drops related to the Lawley project from the project_drops table.\n    SELECT\n        drop_number,\n        status,\n        installation_date,\n        activation_date\n    FROM\n        project_drops\n    WHERE\n        project_id = (SELECT id FROM projects WHERE project_code LIKE 'Law%%' LIMIT 1) -- Assumes a single Lawley project exists.  Should be improved with better project ID handling.\n\n), NokiaData AS (\n    -- Select Nokia data relevant to Lawley drops, including signal strength information.\n    SELECT\n        pd.drop_number,\n        nd.ont_rx_signal_dbm,  -- Optical Network Terminal receive signal strength\n        nd.status AS nokia_status,\n        nd.measurement_date\n    FROM\n        LawleyDrops pd\n    JOIN\n        nokia_data nd ON pd.drop_number = nd.drop_number\n    WHERE\n        nd.project_id = (SELECT id FROM projects WHERE project_code LIKE 'Law%%' LIMIT 1) -- Again, improve project ID selection\n\n), StatusChanges AS (\n    -- Retrieve status changes for Lawley drops.\n    SELECT\n        sc.drop_number,\n        sc.status,\n        sc.status_date,\n        sc.agent_name\n    FROM\n        status_changes sc\n    WHERE\n        sc.project_name LIKE 'Lawley%%' -- Using project name for matching in status_changes.  Could be improved for consistency.\n        AND sc.drop_number IN (SELECT drop_number FROM LawleyDrops)\n)\n\n-- Combine the data to show drops, their statuses, installation/activation dates, Nokia signal data and status change history.\nSELECT\n    ld.drop_number,\n    ld.status AS project_drop_status,\n    ld.installation_date,\n    ld.activation_date,\n    nd.ont_rx_signal_dbm,\n    nd.nokia_status,\n    nd.measurement_date,\n    string_agg(sc.status || ' on ' || sc.status_date || ' by ' || sc.agent_name, '; ') as status_history -- Aggregate status changes into a single string\nFROM\n    LawleyDrops ld\nLEFT JOIN\n    NokiaData nd ON ld.drop_number = nd.drop_number\nLEFT JOIN\n    StatusChanges sc ON ld.drop_number = sc.drop_number\nGROUP BY\n    ld.drop_number, ld.status, ld.installation_date, ld.activation_date, nd.ont_rx_signal_dbm, nd.nokia_status, nd.measurement_date\nORDER BY\n    ld.drop_number;\n\n--  Further analysis could involve identifying drops with consistently low signal strength from NokiaData,\n--  frequent status changes in StatusChanges indicating instability, or delays between installation and activation.\n\n\n\n**Improvements Needed:**\n\n* **Robust Project ID Handling:** The query relies on `LIKE 'Law%%'` which is fragile.  It assumes only one project with \"Law\" in its code exists and would fail if multiple Lawley projects exist.  A more robust solution involves using a proper project ID lookup using a unique identifier rather than partial matching on project code or name.\n* **Data Consistency:**  The query uses `project_code` in `projects` and `project_name` in `status_changes`.  This inconsistency is risky and needs to be addressed.  A better approach would involve using a consistent join key across tables, possibly through a shared `project_id` column.\n* **Error Handling:** The query assumes tables have data and that joins will work as expected.  It needs enhancements to handle cases where no matching data is found in one or more of the tables.  For example, a `LEFT JOIN` is used, but specific error handling could be added to better detect and manage such issues.\n* **Data Filtering and Thresholds:** The query returns all data.  For practical use, filters based on signal strength thresholds, date ranges (e.g., last 30 days), and specific statuses (e.g., \"failed,\" \"disconnected\") should be included to focus on the most relevant drops.\n* **Performance:** For very large datasets, this query might be slow.  Adding indexes to relevant columns (especially `project_id`, `drop_number`, and date columns) would greatly improve query performance.\n\n\nThis improved query provides a much more robust and informative solution for identifying drops in the Lawley project and understanding their status and signal quality. Remember to adapt the query with specific thresholds and filters based on FibreFlow's needs.  The Firebase query was not necessary based on the query's focus.]\n(Background on this error at: https://sqlalche.me/e/20/f405)",
+      "sql_attempted": "-- Query to identify drops associated with the Lawley project, showing potential issues.  We'll focus on status changes and Nokia data for signal strength indications.\n\nWITH LawleyDrops AS (\n    -- Se"
+    },
+    {
+      "question_pattern": "other",
+      "entities": [
+        "equipment"
+      ],
+      "error": null,
+      "sql_attempted": "-- Calculate PON utilization assuming a 32-port PON.  This query counts the number of drops associated with each PON and calculates the utilization percentage.\n-- It uses the 'project_drops' table whi"
+    },
+    {
+      "question_pattern": "other",
+      "entities": [
+        "equipment"
+      ],
+      "error": null,
+      "sql_attempted": "-- Calculate PON utilization assuming a 32-port PON.  This query needs a table with PON information to be effective.\n--  The `project_poles` table contains PON information, but it does not directly in"
+    },
+    {
+      "question_pattern": "list",
+      "entities": [],
+      "error": "(psycopg2.OperationalError) SSL connection has been closed unexpectedly\n\n[SQL: -- Query to retrieve all projects from the 'projects' table.\nSELECT\n  id,\n  firebase_id,\n  project_code,\n  name,\n  description,\n  client_id,\n  client_name,\n  status,\n  priority,\n  location,\n  start_date,\n  end_date,\n  budget,\n  overall_progress,\n  active_tasks_count,\n  completed_tasks_count,\n  current_phase_progress,\n  sow_total_poles,\n  sow_total_drops,\n  sow_total_fibre_meters,\n  sow_zones,\n  sow_pons,\n  sow_calculation_json,\n  created_at,\n  updated_at,\n  created_by,\n  updated_by\nFROM\n  projects\nLIMIT\n  100;]\n(Background on this error at: https://sqlalche.me/e/20/e3q8)",
+      "sql_attempted": "-- Query to retrieve all projects from the 'projects' table.\nSELECT\n  id,\n  firebase_id,\n  project_code,\n  name,\n  description,\n  client_id,\n  client_name,\n  status,\n  priority,\n  location,\n  start_da"
+    }
+  ],
+  "entity_mappings": {
+    "personnel": [
+      "staff",
+      "technician"
+    ],
+    "project_codes": [
+      "LAW",
+      "LAW-001"
+    ],
+    "test": [
+      "entity"
+    ],
+    "measurements": [
+      "splice loss"
+    ],
+    "infrastructure": [
+      "splice",
+      "drop"
+    ],
+    "aggregations": [
+      "average"
+    ],
+    "status_values": [
+      "installed"
+    ],
+    "project_names": [
+      "Lawley"
+    ],
+    "numeric": [
+      "001"
+    ]
+  },
+  "routing_rules": {},
+  "corrections": [
+    {
+      "original_question": "Calculate PON utilization",
+      "wrong_sql": "SELECT pon_id, COUNT(*) FROM drops",
+      "correct_sql": "SELECT pon_id, COUNT(*) FROM drops GROUP BY pon_id",
+      "entities": {
+        "equipment": [
+          "pon"
+        ]
+      },
+      "classification": {
+        "type": "analytical",
+        "databases": [
+          "postgresql"
+        ]
+      }
+    }
+  ]
+}

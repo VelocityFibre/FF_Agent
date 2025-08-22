@@ -1,0 +1,13 @@
+{
+  "total_queries": 1,
+  "successful_queries": 1,
+  "failed_queries": 0,
+  "feedback_received": 1,
+  "positive_feedback": 1,
+  "negative_feedback": 0,
+  "corrections_received": 0,
+  "methods_used": {
+    "test": 1
+  },
+  "average_confidence": 0
+}

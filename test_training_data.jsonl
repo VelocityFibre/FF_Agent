@@ -1,0 +1,3 @@
+{"prompt": "List all staff", "completion": "FIREBASE_QUERY: staff", "metadata": {"execution_time": 0.5, "row_count": 10}}
+{"prompt": "Show drops in Lawley", "completion": "SELECT * FROM drops WHERE project='LAW'", "metadata": {"execution_time": 1.2, "row_count": 100}}
+{"prompt": "Calculate PON utilization", "completion": "SELECT pon_id, COUNT(*) FROM drops GROUP BY pon_id", "metadata": {"was_corrected": true, "original_wrong": "SELECT pon_id, COUNT(*) FROM drops"}}

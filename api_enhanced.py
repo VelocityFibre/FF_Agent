@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Enhanced FastAPI backend for FF_Agent with Vector Database Integration
-Includes semantic search and query learning capabilities
+Includes semantic search, query learning capabilities, and enhanced prompt engineering
 """
 
 from fastapi import FastAPI, HTTPException
@@ -15,6 +15,7 @@ import pandas as pd
 from typing import Dict, Any, List, Optional
 from firebase_optimizer import FirebaseQueryOptimizer
 from vector_store import VectorStore
+from prompt_improvements import EnhancedPromptGenerator
 import time
 import json
 
@@ -41,6 +42,9 @@ engine = create_engine(os.getenv("NEON_DATABASE_URL"))
 # Initialize Vector Store
 vector_store = VectorStore()
 
+# Initialize Enhanced Prompt Generator
+prompt_generator = EnhancedPromptGenerator()
+
 # Cache schema
 SCHEMA_CACHE = None
 
@@ -57,6 +61,8 @@ class QueryResponse(BaseModel):
     row_count: int = 0
     vector_context_used: bool = False
     similar_queries_found: int = 0
+    entities_detected: Dict = {}
+    query_classification: Dict = {}
 
 def get_schema():
     """Get database schema from Neon"""
@@ -148,47 +154,24 @@ USER QUESTION: {question}
 SQL QUERY:"""
 
 def generate_enhanced_sql(question: str) -> tuple[str, Dict]:
-    """Generate SQL with vector database context"""
+    """Generate SQL with vector database context and enhanced prompting"""
     schema = get_schema()
     schema_str = format_schema_for_prompt(schema)
+    
+    # Analyze query with enhanced prompt generator
+    query_analysis = prompt_generator.analyze_query(question)
+    entities = query_analysis['entities']
+    classification = query_analysis['classification']
     
     # Get vector context
     context = vector_store.get_query_context(question)
     
-    # Format examples
-    examples_str = ""
-    if context['examples']:
-        for i, ex in enumerate(context['examples'][:3], 1):
-            examples_str += f"\nExample {i} (similarity: {ex['similarity']}):\n"
-            examples_str += f"  Question: {ex['question']}\n"
-            examples_str += f"  SQL: {ex['sql']}\n"
-    else:
-        examples_str = "No similar queries found"
-    
-    # Format schema hints
-    schema_hints_str = ""
-    if context['schema_hints']:
-        for hint in context['schema_hints']:
-            schema_hints_str += f"- {hint['table']}: {', '.join(hint['relevant_columns'])}\n"
-    else:
-        schema_hints_str = "Use schema above to identify relevant tables"
-    
-    # Format error patterns
-    error_patterns_str = ""
-    if context['avoid_patterns']:
-        for err in context['avoid_patterns']:
-            error_patterns_str += f"- Avoid: {err['failed_sql'][:100]}...\n"
-            error_patterns_str += f"  Error: {err['error']}\n"
-    else:
-        error_patterns_str = "No known error patterns"
-    
-    # Generate prompt with context
-    prompt = ENHANCED_SQL_PROMPT.format(
+    # Generate enhanced prompt using the new system
+    prompt = prompt_generator.generate_prompt(
+        question=question,
         schema=schema_str,
-        examples=examples_str,
-        schema_hints=schema_hints_str,
-        error_patterns=error_patterns_str,
-        question=question
+        similar_queries=context['examples'] if context['examples'] else None,
+        error_patterns=context['avoid_patterns'] if context['avoid_patterns'] else None
     )
     
     # Generate SQL using Gemini
@@ -201,17 +184,24 @@ def generate_enhanced_sql(question: str) -> tuple[str, Dict]:
     # Return SQL and context info
     return sql, {
         'vector_context_used': True,
-        'similar_queries_found': len(context['examples'])
+        'similar_queries_found': len(context['examples']),
+        'entities_detected': entities,
+        'query_classification': classification
     }
 
-def generate_sql(question: str) -> str:
-    """Original SQL generation (fallback)"""
+def generate_sql(question: str) -> tuple[str, Dict]:
+    """Fallback SQL generation with basic prompt improvements"""
     schema = get_schema()
     schema_str = format_schema_for_prompt(schema)
     
-    prompt = MAIN_SQL_PROMPT.format(
+    # Still use enhanced prompt even in fallback mode
+    query_analysis = prompt_generator.analyze_query(question)
+    
+    prompt = prompt_generator.generate_prompt(
+        question=question,
         schema=schema_str,
-        question=question
+        similar_queries=None,
+        error_patterns=None
     )
     
     response = gemini_model.generate_content(prompt)
@@ -220,7 +210,10 @@ def generate_sql(question: str) -> str:
     # Clean up SQL
     sql = sql.replace("```sql", "").replace("```", "").strip()
     
-    return sql
+    return sql, {
+        'entities_detected': query_analysis['entities'],
+        'query_classification': query_analysis['classification']
+    }
 
 def execute_sql(sql: str) -> tuple[List[Dict], int]:
     """Execute SQL query and return results"""
@@ -253,17 +246,23 @@ async def query(request: QueryRequest):
         if request.use_vector_search:
             try:
                 sql, context_info = generate_enhanced_sql(request.question)
-                vector_context_used = context_info['vector_context_used']
-                similar_queries_found = context_info['similar_queries_found']
+                vector_context_used = context_info.get('vector_context_used', False)
+                similar_queries_found = context_info.get('similar_queries_found', 0)
+                entities_detected = context_info.get('entities_detected', {})
+                query_classification = context_info.get('query_classification', {})
             except Exception as e:
                 print(f"Vector search failed, falling back: {e}")
-                sql = generate_sql(request.question)
+                sql, context_info = generate_sql(request.question)
                 vector_context_used = False
                 similar_queries_found = 0
+                entities_detected = context_info.get('entities_detected', {})
+                query_classification = context_info.get('query_classification', {})
         else:
-            sql = generate_sql(request.question)
+            sql, context_info = generate_sql(request.question)
             vector_context_used = False
             similar_queries_found = 0
+            entities_detected = context_info.get('entities_detected', {})
+            query_classification = context_info.get('query_classification', {})
         
         # Check if this is a Firebase query
         if "FIREBASE_QUERY:" in sql:
@@ -291,7 +290,9 @@ async def query(request: QueryRequest):
                     data=[],  # Firebase data here
                     row_count=0,
                     vector_context_used=vector_context_used,
-                    similar_queries_found=similar_queries_found
+                    similar_queries_found=similar_queries_found,
+                    entities_detected=entities_detected,
+                    query_classification=query_classification
                 )
                 
             except Exception as e:
@@ -309,7 +310,9 @@ async def query(request: QueryRequest):
                     sql=sql,
                     error=f"Firebase error: {str(e)}",
                     vector_context_used=vector_context_used,
-                    similar_queries_found=similar_queries_found
+                    similar_queries_found=similar_queries_found,
+                    entities_detected=entities_detected,
+                    query_classification=query_classification
                 )
         
         # Execute SQL query
@@ -337,7 +340,9 @@ async def query(request: QueryRequest):
             data=data,
             row_count=row_count,
             vector_context_used=vector_context_used,
-            similar_queries_found=similar_queries_found
+            similar_queries_found=similar_queries_found,
+            entities_detected=entities_detected,
+            query_classification=query_classification
         )
         
     except Exception as e:
@@ -355,7 +360,9 @@ async def query(request: QueryRequest):
             sql=sql if 'sql' in locals() else None,
             error=str(e),
             vector_context_used=vector_context_used if 'vector_context_used' in locals() else False,
-            similar_queries_found=similar_queries_found if 'similar_queries_found' in locals() else 0
+            similar_queries_found=similar_queries_found if 'similar_queries_found' in locals() else 0,
+            entities_detected=entities_detected if 'entities_detected' in locals() else {},
+            query_classification=query_classification if 'query_classification' in locals() else {}
         )
 
 @app.get("/stats")

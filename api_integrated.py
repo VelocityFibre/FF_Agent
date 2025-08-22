@@ -108,6 +108,7 @@ class QueryResponse(BaseModel):
     method_used: Optional[str] = None
     confidence: Optional[float] = None
     similar_patterns: Optional[List[Dict]] = None
+    query_id: Optional[str] = None
 
 class FeedbackRequest(BaseModel):
     query_id: str
@@ -275,6 +276,7 @@ async def process_query(request: QueryRequest):
                 logger.warning(f"Failed to store pattern: {e}")
         
         # Log to feedback system
+        query_id = None
         if feedback_system:
             query_id = feedback_system.log_query(
                 question=request.question,
@@ -291,7 +293,8 @@ async def process_query(request: QueryRequest):
             row_count=len(data),
             method_used=method_used,
             confidence=confidence,
-            similar_patterns=similar_patterns[:3] if similar_patterns else None
+            similar_patterns=similar_patterns[:3] if similar_patterns else None,
+            query_id=query_id  # Include query_id in response
         )
             
     except Exception as e:

@@ -61,10 +61,11 @@ pkill -f "python api.py" 2>/dev/null
 pkill -f "python3 -m http.server 3000" 2>/dev/null
 sleep 2
 
-# Start API server
-echo -e "\n${GREEN}Starting API server on port 8000...${NC}"
+# Start API server (using integrated version)
+echo -e "\n${GREEN}Starting Integrated API server on port 8000...${NC}"
+echo -e "${YELLOW}  With Vanna AI, Vector Search, and Feedback System${NC}"
 source venv/bin/activate
-python api.py &
+python api_integrated.py &
 API_PID=$!
 
 # Wait for API to start

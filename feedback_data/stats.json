@@ -1,0 +1,15 @@
+{
+  "total_queries": 7,
+  "successful_queries": 7,
+  "failed_queries": 0,
+  "feedback_received": 2,
+  "positive_feedback": 2,
+  "negative_feedback": 0,
+  "corrections_received": 0,
+  "methods_used": {
+    "gemini_direct": 7
+  },
+  "average_confidence": 0,
+  "success_rate": 100.0,
+  "positive_rate": 0
+}

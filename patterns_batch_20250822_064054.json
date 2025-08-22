@@ -1,0 +1,957 @@
+{
+  "timestamp": "2025-08-22T06:40:54.560167",
+  "total_patterns": 190,
+  "tables_analyzed": 24,
+  "patterns": [
+    {
+      "question": "Show all connection_tests",
+      "sql": "SELECT * FROM connection_tests",
+      "type": "basic"
+    },
+    {
+      "question": "Count connection_tests records",
+      "sql": "SELECT COUNT(*) as total FROM connection_tests",
+      "type": "basic"
+    },
+    {
+      "question": "Show first 10 connection_tests",
+      "sql": "SELECT * FROM connection_tests LIMIT 10",
+      "type": "basic"
+    },
+    {
+      "question": "Show recent connection_tests",
+      "sql": "SELECT * FROM connection_tests WHERE created_at >= CURRENT_DATE - INTERVAL '7 days'",
+      "type": "date"
+    },
+    {
+      "question": "Get connection_tests from this month",
+      "sql": "SELECT * FROM connection_tests WHERE created_at >= DATE_TRUNC('month', CURRENT_DATE)",
+      "type": "date"
+    },
+    {
+      "question": "Show connection_tests ordered by date",
+      "sql": "SELECT * FROM connection_tests ORDER BY created_at DESC LIMIT 50",
+      "type": "date"
+    },
+    {
+      "question": "Calculate total id in connection_tests",
+      "sql": "SELECT SUM(id) as total FROM connection_tests",
+      "type": "aggregation"
+    },
+    {
+      "question": "Get average id from connection_tests",
+      "sql": "SELECT AVG(id) as average FROM connection_tests",
+      "type": "aggregation"
+    },
+    {
+      "question": "Search connection_tests by test_name",
+      "sql": "SELECT * FROM connection_tests WHERE test_name ILIKE '%search_term%'",
+      "type": "search"
+    },
+    {
+      "question": "Find connection_tests by ID",
+      "sql": "SELECT * FROM connection_tests WHERE id = :id",
+      "type": "lookup"
+    },
+    {
+      "question": "Show all error_patterns",
+      "sql": "SELECT * FROM error_patterns",
+      "type": "basic"
+    },
+    {
+      "question": "Count error_patterns records",
+      "sql": "SELECT COUNT(*) as total FROM error_patterns",
+      "type": "basic"
+    },
+    {
+      "question": "Show first 10 error_patterns",
+      "sql": "SELECT * FROM error_patterns LIMIT 10",
+      "type": "basic"
+    },
+    {
+      "question": "Show recent error_patterns",
+      "sql": "SELECT * FROM error_patterns WHERE created_at >= CURRENT_DATE - INTERVAL '7 days'",
+      "type": "date"
+    },
+    {
+      "question": "Get error_patterns from this month",
+      "sql": "SELECT * FROM error_patterns WHERE created_at >= DATE_TRUNC('month', CURRENT_DATE)",
+      "type": "date"
+    },
+    {
+      "question": "Show error_patterns ordered by date",
+      "sql": "SELECT * FROM error_patterns ORDER BY created_at DESC LIMIT 50",
+      "type": "date"
+    },
+    {
+      "question": "Calculate total id in error_patterns",
+      "sql": "SELECT SUM(id) as total FROM error_patterns",
+      "type": "aggregation"
+    },
+    {
+      "question": "Get average id from error_patterns",
+      "sql": "SELECT AVG(id) as average FROM error_patterns",
+      "type": "aggregation"
+    },
+    {
+      "question": "Calculate total occurrence_count in error_patterns",
+      "sql": "SELECT SUM(occurrence_count) as total FROM error_patterns",
+      "type": "aggregation"
+    },
+    {
+      "question": "Get average occurrence_count from error_patterns",
+      "sql": "SELECT AVG(occurrence_count) as average FROM error_patterns",
+      "type": "aggregation"
+    },
+    {
+      "question": "Search error_patterns by question",
+      "sql": "SELECT * FROM error_patterns WHERE question ILIKE '%search_term%'",
+      "type": "search"
+    },
+    {
+      "question": "Find error_patterns by ID",
+      "sql": "SELECT * FROM error_patterns WHERE id = :id",
+      "type": "lookup"
+    },
+    {
+      "question": "Show all firebase_current_state",
+      "sql": "SELECT * FROM firebase_current_state",
+      "type": "basic"
+    },
+    {
+      "question": "Count firebase_current_state records",
+      "sql": "SELECT COUNT(*) as total FROM firebase_current_state",
+      "type": "basic"
+    },
+    {
+      "question": "Show first 10 firebase_current_state",
+      "sql": "SELECT * FROM firebase_current_state LIMIT 10",
+      "type": "basic"
+    },
+    {
+      "question": "Show recent firebase_current_state",
+      "sql": "SELECT * FROM firebase_current_state WHERE last_updated >= CURRENT_DATE - INTERVAL '7 days'",
+      "type": "date"
+    },
+    {
+      "question": "Get firebase_current_state from this month",
+      "sql": "SELECT * FROM firebase_current_state WHERE last_updated >= DATE_TRUNC('month', CURRENT_DATE)",
+      "type": "date"
+    },
+    {
+      "question": "Show firebase_current_state ordered by date",
+      "sql": "SELECT * FROM firebase_current_state ORDER BY last_updated DESC LIMIT 50",
+      "type": "date"
+    },
+    {
+      "question": "Search firebase_current_state by collection",
+      "sql": "SELECT * FROM firebase_current_state WHERE collection ILIKE '%search_term%'",
+      "type": "search"
+    },
+    {
+      "question": "Find firebase_current_state by ID",
+      "sql": "SELECT * FROM firebase_current_state WHERE document_id = :id",
+      "type": "lookup"
+    },
+    {
+      "question": "Show all firebase_events",
+      "sql": "SELECT * FROM firebase_events",
+      "type": "basic"
+    },
+    {
+      "question": "Count firebase_events records",
+      "sql": "SELECT COUNT(*) as total FROM firebase_events",
+      "type": "basic"
+    },
+    {
+      "question": "Show first 10 firebase_events",
+      "sql": "SELECT * FROM firebase_events LIMIT 10",
+      "type": "basic"
+    },
+    {
+      "question": "Show recent firebase_events",
+      "sql": "SELECT * FROM firebase_events WHERE timestamp >= CURRENT_DATE - INTERVAL '7 days'",
+      "type": "date"
+    },
+    {
+      "question": "Get firebase_events from this month",
+      "sql": "SELECT * FROM firebase_events WHERE timestamp >= DATE_TRUNC('month', CURRENT_DATE)",
+      "type": "date"
+    },
+    {
+      "question": "Show firebase_events ordered by date",
+      "sql": "SELECT * FROM firebase_events ORDER BY timestamp DESC LIMIT 50",
+      "type": "date"
+    },
+    {
+      "question": "Calculate total id in firebase_events",
+      "sql": "SELECT SUM(id) as total FROM firebase_events",
+      "type": "aggregation"
+    },
+    {
+      "question": "Get average id from firebase_events",
+      "sql": "SELECT AVG(id) as average FROM firebase_events",
+      "type": "aggregation"
+    },
+    {
+      "question": "Search firebase_events by collection",
+      "sql": "SELECT * FROM firebase_events WHERE collection ILIKE '%search_term%'",
+      "type": "search"
+    },
+    {
+      "question": "Find firebase_events by ID",
+      "sql": "SELECT * FROM firebase_events WHERE id = :id",
+      "type": "lookup"
+    },
+    {
+      "question": "Show all import_batches",
+      "sql": "SELECT * FROM import_batches",
+      "type": "basic"
+    },
+    {
+      "question": "Count import_batches records",
+      "sql": "SELECT COUNT(*) as total FROM import_batches",
+      "type": "basic"
+    },
+    {
+      "question": "Show first 10 import_batches",
+      "sql": "SELECT * FROM import_batches LIMIT 10",
+      "type": "basic"
+    },
+    {
+      "question": "Show recent import_batches",
+      "sql": "SELECT * FROM import_batches WHERE import_date >= CURRENT_DATE - INTERVAL '7 days'",
+      "type": "date"
+    },
+    {
+      "question": "Get import_batches from this month",
+      "sql": "SELECT * FROM import_batches WHERE import_date >= DATE_TRUNC('month', CURRENT_DATE)",
+      "type": "date"
+    },
+    {
+      "question": "Show import_batches ordered by date",
+      "sql": "SELECT * FROM import_batches ORDER BY import_date DESC LIMIT 50",
+      "type": "date"
+    },
+    {
+      "question": "Group import_batches by status",
+      "sql": "SELECT status, COUNT(*) as count FROM import_batches GROUP BY status",
+      "type": "status"
+    },
+    {
+      "question": "Show active import_batches",
+      "sql": "SELECT * FROM import_batches WHERE status = 'active'",
+      "type": "status"
+    },
+    {
+      "question": "Find pending import_batches",
+      "sql": "SELECT * FROM import_batches WHERE status = 'pending'",
+      "type": "status"
+    },
+    {
+      "question": "Calculate total total_rows in import_batches",
+      "sql": "SELECT SUM(total_rows) as total FROM import_batches",
+      "type": "aggregation"
+    },
+    {
+      "question": "Get average total_rows from import_batches",
+      "sql": "SELECT AVG(total_rows) as average FROM import_batches",
+      "type": "aggregation"
+    },
+    {
+      "question": "Calculate total processed_rows in import_batches",
+      "sql": "SELECT SUM(processed_rows) as total FROM import_batches",
+      "type": "aggregation"
+    },
+    {
+      "question": "Get average processed_rows from import_batches",
+      "sql": "SELECT AVG(processed_rows) as average FROM import_batches",
+      "type": "aggregation"
+    },
+    {
+      "question": "Search import_batches by id",
+      "sql": "SELECT * FROM import_batches WHERE id ILIKE '%search_term%'",
+      "type": "search"
+    },
+    {
+      "question": "Find import_batches by ID",
+      "sql": "SELECT * FROM import_batches WHERE id = :id",
+      "type": "lookup"
+    },
+    {
+      "question": "Show all nokia_data",
+      "sql": "SELECT * FROM nokia_data",
+      "type": "basic"
+    },
+    {
+      "question": "Count nokia_data records",
+      "sql": "SELECT COUNT(*) as total FROM nokia_data",
+      "type": "basic"
+    },
+    {
+      "question": "Show first 10 nokia_data",
+      "sql": "SELECT * FROM nokia_data LIMIT 10",
+      "type": "basic"
+    },
+    {
+      "question": "Show recent nokia_data",
+      "sql": "SELECT * FROM nokia_data WHERE measurement_timestamp >= CURRENT_DATE - INTERVAL '7 days'",
+      "type": "date"
+    },
+    {
+      "question": "Get nokia_data from this month",
+      "sql": "SELECT * FROM nokia_data WHERE measurement_timestamp >= DATE_TRUNC('month', CURRENT_DATE)",
+      "type": "date"
+    },
+    {
+      "question": "Show nokia_data ordered by date",
+      "sql": "SELECT * FROM nokia_data ORDER BY measurement_timestamp DESC LIMIT 50",
+      "type": "date"
+    },
+    {
+      "question": "Group nokia_data by status",
+      "sql": "SELECT status, COUNT(*) as count FROM nokia_data GROUP BY status",
+      "type": "status"
+    },
+    {
+      "question": "Show active nokia_data",
+      "sql": "SELECT * FROM nokia_data WHERE status = 'active'",
+      "type": "status"
+    },
+    {
+      "question": "Find pending nokia_data",
+      "sql": "SELECT * FROM nokia_data WHERE status = 'pending'",
+      "type": "status"
+    },
+    {
+      "question": "Calculate total id in nokia_data",
+      "sql": "SELECT SUM(id) as total FROM nokia_data",
+      "type": "aggregation"
+    },
+    {
+      "question": "Get average id from nokia_data",
+      "sql": "SELECT AVG(id) as average FROM nokia_data",
+      "type": "aggregation"
+    },
+    {
+      "question": "Calculate total ont_rx_signal_dbm in nokia_data",
+      "sql": "SELECT SUM(ont_rx_signal_dbm) as total FROM nokia_data",
+      "type": "aggregation"
+    },
+    {
+      "question": "Get average ont_rx_signal_dbm from nokia_data",
+      "sql": "SELECT AVG(ont_rx_signal_dbm) as average FROM nokia_data",
+      "type": "aggregation"
+    },
+    {
+      "question": "Search nokia_data by project_id",
+      "sql": "SELECT * FROM nokia_data WHERE project_id ILIKE '%search_term%'",
+      "type": "search"
+    },
+    {
+      "question": "Find nokia_data by ID",
+      "sql": "SELECT * FROM nokia_data WHERE id = :id",
+      "type": "lookup"
+    },
+    {
+      "question": "Show all onemap_import_batches",
+      "sql": "SELECT * FROM onemap_import_batches",
+      "type": "basic"
+    },
+    {
+      "question": "Count onemap_import_batches records",
+      "sql": "SELECT COUNT(*) as total FROM onemap_import_batches",
+      "type": "basic"
+    },
+    {
+      "question": "Show first 10 onemap_import_batches",
+      "sql": "SELECT * FROM onemap_import_batches LIMIT 10",
+      "type": "basic"
+    },
+    {
+      "question": "Show recent onemap_import_batches",
+      "sql": "SELECT * FROM onemap_import_batches WHERE updated_entities >= CURRENT_DATE - INTERVAL '7 days'",
+      "type": "date"
+    },
+    {
+      "question": "Get onemap_import_batches from this month",
+      "sql": "SELECT * FROM onemap_import_batches WHERE updated_entities >= DATE_TRUNC('month', CURRENT_DATE)",
+      "type": "date"
+    },
+    {
+      "question": "Show onemap_import_batches ordered by date",
+      "sql": "SELECT * FROM onemap_import_batches ORDER BY updated_entities DESC LIMIT 50",
+      "type": "date"
+    },
+    {
+      "question": "Group onemap_import_batches by status",
+      "sql": "SELECT status_changes, COUNT(*) as count FROM onemap_import_batches GROUP BY status_changes",
+      "type": "status"
+    },
+    {
+      "question": "Show active onemap_import_batches",
+      "sql": "SELECT * FROM onemap_import_batches WHERE status_changes = 'active'",
+      "type": "status"
+    },
+    {
+      "question": "Find pending onemap_import_batches",
+      "sql": "SELECT * FROM onemap_import_batches WHERE status_changes = 'pending'",
+      "type": "status"
+    },
+    {
+      "question": "Calculate total total_rows in onemap_import_batches",
+      "sql": "SELECT SUM(total_rows) as total FROM onemap_import_batches",
+      "type": "aggregation"
+    },
+    {
+      "question": "Get average total_rows from onemap_import_batches",
+      "sql": "SELECT AVG(total_rows) as average FROM onemap_import_batches",
+      "type": "aggregation"
+    },
+    {
+      "question": "Calculate total processed_rows in onemap_import_batches",
+      "sql": "SELECT SUM(processed_rows) as total FROM onemap_import_batches",
+      "type": "aggregation"
+    },
+    {
+      "question": "Get average processed_rows from onemap_import_batches",
+      "sql": "SELECT AVG(processed_rows) as average FROM onemap_import_batches",
+      "type": "aggregation"
+    },
+    {
+      "question": "Search onemap_import_batches by project_name",
+      "sql": "SELECT * FROM onemap_import_batches WHERE project_name ILIKE '%search_term%'",
+      "type": "search"
+    },
+    {
+      "question": "Find onemap_import_batches by ID",
+      "sql": "SELECT * FROM onemap_import_batches WHERE id = :id",
+      "type": "lookup"
+    },
+    {
+      "question": "Show all projects",
+      "sql": "SELECT * FROM projects",
+      "type": "basic"
+    },
+    {
+      "question": "Count projects records",
+      "sql": "SELECT COUNT(*) as total FROM projects",
+      "type": "basic"
+    },
+    {
+      "question": "Show first 10 projects",
+      "sql": "SELECT * FROM projects LIMIT 10",
+      "type": "basic"
+    },
+    {
+      "question": "Show recent projects",
+      "sql": "SELECT * FROM projects WHERE start_date >= CURRENT_DATE - INTERVAL '7 days'",
+      "type": "date"
+    },
+    {
+      "question": "Get projects from this month",
+      "sql": "SELECT * FROM projects WHERE start_date >= DATE_TRUNC('month', CURRENT_DATE)",
+      "type": "date"
+    },
+    {
+      "question": "Show projects ordered by date",
+      "sql": "SELECT * FROM projects ORDER BY start_date DESC LIMIT 50",
+      "type": "date"
+    },
+    {
+      "question": "Group projects by status",
+      "sql": "SELECT status, COUNT(*) as count FROM projects GROUP BY status",
+      "type": "status"
+    },
+    {
+      "question": "Show active projects",
+      "sql": "SELECT * FROM projects WHERE status = 'active'",
+      "type": "status"
+    },
+    {
+      "question": "Find pending projects",
+      "sql": "SELECT * FROM projects WHERE status = 'pending'",
+      "type": "status"
+    },
+    {
+      "question": "Calculate total budget in projects",
+      "sql": "SELECT SUM(budget) as total FROM projects",
+      "type": "aggregation"
+    },
+    {
+      "question": "Get average budget from projects",
+      "sql": "SELECT AVG(budget) as average FROM projects",
+      "type": "aggregation"
+    },
+    {
+      "question": "Calculate total overall_progress in projects",
+      "sql": "SELECT SUM(overall_progress) as total FROM projects",
+      "type": "aggregation"
+    },
+    {
+      "question": "Get average overall_progress from projects",
+      "sql": "SELECT AVG(overall_progress) as average FROM projects",
+      "type": "aggregation"
+    },
+    {
+      "question": "Search projects by firebase_id",
+      "sql": "SELECT * FROM projects WHERE firebase_id ILIKE '%search_term%'",
+      "type": "search"
+    },
+    {
+      "question": "Find projects by ID",
+      "sql": "SELECT * FROM projects WHERE id = :id",
+      "type": "lookup"
+    },
+    {
+      "question": "Show all query_embeddings",
+      "sql": "SELECT * FROM query_embeddings",
+      "type": "basic"
+    },
+    {
+      "question": "Count query_embeddings records",
+      "sql": "SELECT COUNT(*) as total FROM query_embeddings",
+      "type": "basic"
+    },
+    {
+      "question": "Show first 10 query_embeddings",
+      "sql": "SELECT * FROM query_embeddings LIMIT 10",
+      "type": "basic"
+    },
+    {
+      "question": "Show recent query_embeddings",
+      "sql": "SELECT * FROM query_embeddings WHERE avg_execution_time >= CURRENT_DATE - INTERVAL '7 days'",
+      "type": "date"
+    },
+    {
+      "question": "Get query_embeddings from this month",
+      "sql": "SELECT * FROM query_embeddings WHERE avg_execution_time >= DATE_TRUNC('month', CURRENT_DATE)",
+      "type": "date"
+    },
+    {
+      "question": "Show query_embeddings ordered by date",
+      "sql": "SELECT * FROM query_embeddings ORDER BY avg_execution_time DESC LIMIT 50",
+      "type": "date"
+    },
+    {
+      "question": "Calculate total id in query_embeddings",
+      "sql": "SELECT SUM(id) as total FROM query_embeddings",
+      "type": "aggregation"
+    },
+    {
+      "question": "Get average id from query_embeddings",
+      "sql": "SELECT AVG(id) as average FROM query_embeddings",
+      "type": "aggregation"
+    },
+    {
+      "question": "Calculate total success_rate in query_embeddings",
+      "sql": "SELECT SUM(success_rate) as total FROM query_embeddings",
+      "type": "aggregation"
+    },
+    {
+      "question": "Get average success_rate from query_embeddings",
+      "sql": "SELECT AVG(success_rate) as average FROM query_embeddings",
+      "type": "aggregation"
+    },
+    {
+      "question": "Search query_embeddings by question",
+      "sql": "SELECT * FROM query_embeddings WHERE question ILIKE '%search_term%'",
+      "type": "search"
+    },
+    {
+      "question": "Find query_embeddings by ID",
+      "sql": "SELECT * FROM query_embeddings WHERE id = :id",
+      "type": "lookup"
+    },
+    {
+      "question": "Show all schema_embeddings",
+      "sql": "SELECT * FROM schema_embeddings",
+      "type": "basic"
+    },
+    {
+      "question": "Count schema_embeddings records",
+      "sql": "SELECT COUNT(*) as total FROM schema_embeddings",
+      "type": "basic"
+    },
+    {
+      "question": "Show first 10 schema_embeddings",
+      "sql": "SELECT * FROM schema_embeddings LIMIT 10",
+      "type": "basic"
+    },
+    {
+      "question": "Show recent schema_embeddings",
+      "sql": "SELECT * FROM schema_embeddings WHERE created_at >= CURRENT_DATE - INTERVAL '7 days'",
+      "type": "date"
+    },
+    {
+      "question": "Get schema_embeddings from this month",
+      "sql": "SELECT * FROM schema_embeddings WHERE created_at >= DATE_TRUNC('month', CURRENT_DATE)",
+      "type": "date"
+    },
+    {
+      "question": "Show schema_embeddings ordered by date",
+      "sql": "SELECT * FROM schema_embeddings ORDER BY created_at DESC LIMIT 50",
+      "type": "date"
+    },
+    {
+      "question": "Calculate total id in schema_embeddings",
+      "sql": "SELECT SUM(id) as total FROM schema_embeddings",
+      "type": "aggregation"
+    },
+    {
+      "question": "Get average id from schema_embeddings",
+      "sql": "SELECT AVG(id) as average FROM schema_embeddings",
+      "type": "aggregation"
+    },
+    {
+      "question": "Calculate total usage_frequency in schema_embeddings",
+      "sql": "SELECT SUM(usage_frequency) as total FROM schema_embeddings",
+      "type": "aggregation"
+    },
+    {
+      "question": "Get average usage_frequency from schema_embeddings",
+      "sql": "SELECT AVG(usage_frequency) as average FROM schema_embeddings",
+      "type": "aggregation"
+    },
+    {
+      "question": "Search schema_embeddings by table_name",
+      "sql": "SELECT * FROM schema_embeddings WHERE table_name ILIKE '%search_term%'",
+      "type": "search"
+    },
+    {
+      "question": "Find schema_embeddings by ID",
+      "sql": "SELECT * FROM schema_embeddings WHERE id = :id",
+      "type": "lookup"
+    },
+    {
+      "question": "Show all sow_drops",
+      "sql": "SELECT * FROM sow_drops",
+      "type": "basic"
+    },
+    {
+      "question": "Count sow_drops records",
+      "sql": "SELECT COUNT(*) as total FROM sow_drops",
+      "type": "basic"
+    },
+    {
+      "question": "Show first 10 sow_drops",
+      "sql": "SELECT * FROM sow_drops LIMIT 10",
+      "type": "basic"
+    },
+    {
+      "question": "Show recent sow_drops",
+      "sql": "SELECT * FROM sow_drops WHERE created_at >= CURRENT_DATE - INTERVAL '7 days'",
+      "type": "date"
+    },
+    {
+      "question": "Get sow_drops from this month",
+      "sql": "SELECT * FROM sow_drops WHERE created_at >= DATE_TRUNC('month', CURRENT_DATE)",
+      "type": "date"
+    },
+    {
+      "question": "Show sow_drops ordered by date",
+      "sql": "SELECT * FROM sow_drops ORDER BY created_at DESC LIMIT 50",
+      "type": "date"
+    },
+    {
+      "question": "Group sow_drops by status",
+      "sql": "SELECT status, COUNT(*) as count FROM sow_drops GROUP BY status",
+      "type": "status"
+    },
+    {
+      "question": "Show active sow_drops",
+      "sql": "SELECT * FROM sow_drops WHERE status = 'active'",
+      "type": "status"
+    },
+    {
+      "question": "Find pending sow_drops",
+      "sql": "SELECT * FROM sow_drops WHERE status = 'pending'",
+      "type": "status"
+    },
+    {
+      "question": "Calculate total id in sow_drops",
+      "sql": "SELECT SUM(id) as total FROM sow_drops",
+      "type": "aggregation"
+    },
+    {
+      "question": "Get average id from sow_drops",
+      "sql": "SELECT AVG(id) as average FROM sow_drops",
+      "type": "aggregation"
+    },
+    {
+      "question": "Calculate total latitude in sow_drops",
+      "sql": "SELECT SUM(latitude) as total FROM sow_drops",
+      "type": "aggregation"
+    },
+    {
+      "question": "Get average latitude from sow_drops",
+      "sql": "SELECT AVG(latitude) as average FROM sow_drops",
+      "type": "aggregation"
+    },
+    {
+      "question": "Search sow_drops by project_id",
+      "sql": "SELECT * FROM sow_drops WHERE project_id ILIKE '%search_term%'",
+      "type": "search"
+    },
+    {
+      "question": "Find sow_drops by ID",
+      "sql": "SELECT * FROM sow_drops WHERE id = :id",
+      "type": "lookup"
+    },
+    {
+      "question": "Show all sow_fibre",
+      "sql": "SELECT * FROM sow_fibre",
+      "type": "basic"
+    },
+    {
+      "question": "Count sow_fibre records",
+      "sql": "SELECT COUNT(*) as total FROM sow_fibre",
+      "type": "basic"
+    },
+    {
+      "question": "Show first 10 sow_fibre",
+      "sql": "SELECT * FROM sow_fibre LIMIT 10",
+      "type": "basic"
+    },
+    {
+      "question": "Show recent sow_fibre",
+      "sql": "SELECT * FROM sow_fibre WHERE date_completed >= CURRENT_DATE - INTERVAL '7 days'",
+      "type": "date"
+    },
+    {
+      "question": "Get sow_fibre from this month",
+      "sql": "SELECT * FROM sow_fibre WHERE date_completed >= DATE_TRUNC('month', CURRENT_DATE)",
+      "type": "date"
+    },
+    {
+      "question": "Show sow_fibre ordered by date",
+      "sql": "SELECT * FROM sow_fibre ORDER BY date_completed DESC LIMIT 50",
+      "type": "date"
+    },
+    {
+      "question": "Calculate total id in sow_fibre",
+      "sql": "SELECT SUM(id) as total FROM sow_fibre",
+      "type": "aggregation"
+    },
+    {
+      "question": "Get average id from sow_fibre",
+      "sql": "SELECT AVG(id) as average FROM sow_fibre",
+      "type": "aggregation"
+    },
+    {
+      "question": "Calculate total distance in sow_fibre",
+      "sql": "SELECT SUM(distance) as total FROM sow_fibre",
+      "type": "aggregation"
+    },
+    {
+      "question": "Get average distance from sow_fibre",
+      "sql": "SELECT AVG(distance) as average FROM sow_fibre",
+      "type": "aggregation"
+    },
+    {
+      "question": "Search sow_fibre by project_id",
+      "sql": "SELECT * FROM sow_fibre WHERE project_id ILIKE '%search_term%'",
+      "type": "search"
+    },
+    {
+      "question": "Find sow_fibre by ID",
+      "sql": "SELECT * FROM sow_fibre WHERE id = :id",
+      "type": "lookup"
+    },
+    {
+      "question": "Show all sow_poles",
+      "sql": "SELECT * FROM sow_poles",
+      "type": "basic"
+    },
+    {
+      "question": "Count sow_poles records",
+      "sql": "SELECT COUNT(*) as total FROM sow_poles",
+      "type": "basic"
+    },
+    {
+      "question": "Show first 10 sow_poles",
+      "sql": "SELECT * FROM sow_poles LIMIT 10",
+      "type": "basic"
+    },
+    {
+      "question": "Show recent sow_poles",
+      "sql": "SELECT * FROM sow_poles WHERE created_date >= CURRENT_DATE - INTERVAL '7 days'",
+      "type": "date"
+    },
+    {
+      "question": "Get sow_poles from this month",
+      "sql": "SELECT * FROM sow_poles WHERE created_date >= DATE_TRUNC('month', CURRENT_DATE)",
+      "type": "date"
+    },
+    {
+      "question": "Show sow_poles ordered by date",
+      "sql": "SELECT * FROM sow_poles ORDER BY created_date DESC LIMIT 50",
+      "type": "date"
+    },
+    {
+      "question": "Group sow_poles by status",
+      "sql": "SELECT status, COUNT(*) as count FROM sow_poles GROUP BY status",
+      "type": "status"
+    },
+    {
+      "question": "Show active sow_poles",
+      "sql": "SELECT * FROM sow_poles WHERE status = 'active'",
+      "type": "status"
+    },
+    {
+      "question": "Find pending sow_poles",
+      "sql": "SELECT * FROM sow_poles WHERE status = 'pending'",
+      "type": "status"
+    },
+    {
+      "question": "Calculate total id in sow_poles",
+      "sql": "SELECT SUM(id) as total FROM sow_poles",
+      "type": "aggregation"
+    },
+    {
+      "question": "Get average id from sow_poles",
+      "sql": "SELECT AVG(id) as average FROM sow_poles",
+      "type": "aggregation"
+    },
+    {
+      "question": "Calculate total latitude in sow_poles",
+      "sql": "SELECT SUM(latitude) as total FROM sow_poles",
+      "type": "aggregation"
+    },
+    {
+      "question": "Get average latitude from sow_poles",
+      "sql": "SELECT AVG(latitude) as average FROM sow_poles",
+      "type": "aggregation"
+    },
+    {
+      "question": "Search sow_poles by project_id",
+      "sql": "SELECT * FROM sow_poles WHERE project_id ILIKE '%search_term%'",
+      "type": "search"
+    },
+    {
+      "question": "Find sow_poles by ID",
+      "sql": "SELECT * FROM sow_poles WHERE id = :id",
+      "type": "lookup"
+    },
+    {
+      "question": "Show all status_changes",
+      "sql": "SELECT * FROM status_changes",
+      "type": "basic"
+    },
+    {
+      "question": "Count status_changes records",
+      "sql": "SELECT COUNT(*) as total FROM status_changes",
+      "type": "basic"
+    },
+    {
+      "question": "Show first 10 status_changes",
+      "sql": "SELECT * FROM status_changes LIMIT 10",
+      "type": "basic"
+    },
+    {
+      "question": "Show recent status_changes",
+      "sql": "SELECT * FROM status_changes WHERE status_date >= CURRENT_DATE - INTERVAL '7 days'",
+      "type": "date"
+    },
+    {
+      "question": "Get status_changes from this month",
+      "sql": "SELECT * FROM status_changes WHERE status_date >= DATE_TRUNC('month', CURRENT_DATE)",
+      "type": "date"
+    },
+    {
+      "question": "Show status_changes ordered by date",
+      "sql": "SELECT * FROM status_changes ORDER BY status_date DESC LIMIT 50",
+      "type": "date"
+    },
+    {
+      "question": "Group status_changes by status",
+      "sql": "SELECT status, COUNT(*) as count FROM status_changes GROUP BY status",
+      "type": "status"
+    },
+    {
+      "question": "Show active status_changes",
+      "sql": "SELECT * FROM status_changes WHERE status = 'active'",
+      "type": "status"
+    },
+    {
+      "question": "Find pending status_changes",
+      "sql": "SELECT * FROM status_changes WHERE status = 'pending'",
+      "type": "status"
+    },
+    {
+      "question": "Search status_changes by property_id",
+      "sql": "SELECT * FROM status_changes WHERE property_id ILIKE '%search_term%'",
+      "type": "search"
+    },
+    {
+      "question": "Find status_changes by ID",
+      "sql": "SELECT * FROM status_changes WHERE id = :id",
+      "type": "lookup"
+    },
+    {
+      "question": "Show all status_history",
+      "sql": "SELECT * FROM status_history",
+      "type": "basic"
+    },
+    {
+      "question": "Count status_history records",
+      "sql": "SELECT COUNT(*) as total FROM status_history",
+      "type": "basic"
+    },
+    {
+      "question": "Show first 10 status_history",
+      "sql": "SELECT * FROM status_history LIMIT 10",
+      "type": "basic"
+    },
+    {
+      "question": "Show recent status_history",
+      "sql": "SELECT * FROM status_history WHERE created_at >= CURRENT_DATE - INTERVAL '7 days'",
+      "type": "date"
+    },
+    {
+      "question": "Get status_history from this month",
+      "sql": "SELECT * FROM status_history WHERE created_at >= DATE_TRUNC('month', CURRENT_DATE)",
+      "type": "date"
+    },
+    {
+      "question": "Show status_history ordered by date",
+      "sql": "SELECT * FROM status_history ORDER BY created_at DESC LIMIT 50",
+      "type": "date"
+    },
+    {
+      "question": "Group status_history by status",
+      "sql": "SELECT old_status, COUNT(*) as count FROM status_history GROUP BY old_status",
+      "type": "status"
+    },
+    {
+      "question": "Show active status_history",
+      "sql": "SELECT * FROM status_history WHERE old_status = 'active'",
+      "type": "status"
+    },
+    {
+      "question": "Find pending status_history",
+      "sql": "SELECT * FROM status_history WHERE old_status = 'pending'",
+      "type": "status"
+    },
+    {
+      "question": "Search status_history by property_id",
+      "sql": "SELECT * FROM status_history WHERE property_id ILIKE '%search_term%'",
+      "type": "search"
+    },
+    {
+      "question": "Find status_history by ID",
+      "sql": "SELECT * FROM status_history WHERE id = :id",
+      "type": "lookup"
+    },
+    {
+      "question": "Show import batches with their latest status",
+      "sql": "SELECT b.*, h.status as latest_status \n                         FROM onemap_import_batches b \n                         JOIN onemap_status_history h ON b.id = h.import_batch_id\n                         WHERE h.change_date = (\n                             SELECT MAX(change_date) \n                             FROM onemap_status_history \n                             WHERE import_batch_id = b.id\n                         )",
+      "type": "complex_join"
+    },
+    {
+      "question": "Show connection test success rate by day",
+      "sql": "SELECT DATE(tested_at) as test_date, \n                                COUNT(*) as total_tests,\n                                SUM(CASE WHEN test_result = 'success' THEN 1 ELSE 0 END) as successful,\n                                AVG(CASE WHEN test_result = 'success' THEN 1.0 ELSE 0.0 END) * 100 as success_rate\n                         FROM connection_tests\n                         GROUP BY DATE(tested_at)\n                         ORDER BY test_date DESC",
+      "type": "analytical"
+    }
+  ]
+}

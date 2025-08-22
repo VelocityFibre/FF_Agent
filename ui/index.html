@@ -106,15 +106,14 @@
                     const data = await response.json();
                     
                     // Store query ID for feedback
-                    if (data.success) {
+                    if (data.success && data.query_id) {
                         setCurrentQueryId(data.query_id);
                     }
                     
                     setMessages(prev => [...prev, {
                         type: 'assistant',
                         content: data,
-                        timestamp: new Date(),
-                        queryId: data.query_id
+                        timestamp: new Date()
                     }]);
                 } catch (error) {
                     setMessages(prev => [...prev, {
@@ -325,26 +324,26 @@
                                             </details>
                                             
                                             {/* Feedback buttons */}
-                                            {msg.queryId && !msg.feedbackGiven && (
+                                            {msg.content.query_id && !msg.feedbackGiven && (
                                                 <div className="mt-3 flex gap-2">
                                                     <button 
-                                                        onClick={() => handleFeedback(msg.queryId, msg.content.question, msg.content.sql, true)}
-                                                        className="px-3 py-1 bg-green-100 text-green-700 rounded text-sm hover:bg-green-200"
+                                                        onClick={() => handleFeedback(msg.content.query_id, msg.content.question, msg.content.sql, true)}
+                                                        className="px-3 py-1 bg-green-100 text-green-700 rounded text-sm hover:bg-green-200 flex items-center gap-1"
                                                     >
-                                                        👍 Correct
+                                                        <span className="text-lg">✓</span> Correct
                                                     </button>
                                                     <button 
-                                                        onClick={() => handleFeedback(msg.queryId, msg.content.question, msg.content.sql, false)}
-                                                        className="px-3 py-1 bg-red-100 text-red-700 rounded text-sm hover:bg-red-200"
+                                                        onClick={() => handleFeedback(msg.content.query_id, msg.content.question, msg.content.sql, false)}
+                                                        className="px-3 py-1 bg-red-100 text-red-700 rounded text-sm hover:bg-red-200 flex items-center gap-1"
                                                     >
-                                                        👎 Incorrect
+                                                        <span className="text-lg">✗</span> Wrong
                                                     </button>
                                                 </div>
                                             )}
                                             
                                             {msg.feedbackGiven && (
                                                 <div className="mt-2 text-xs text-gray-500">
-                                                    Feedback recorded: {msg.feedbackPositive ? '👍 Correct' : '👎 Incorrect'}
+                                                    Feedback recorded: {msg.feedbackPositive ? '✓ Correct' : '✗ Wrong'}
                                                 </div>
                                             )}
                                         </div>

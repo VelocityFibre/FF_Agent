@@ -1,0 +1,181 @@
+[
+  {
+    "query": "How many drops are in the system?",
+    "type": "infrastructure",
+    "complexity": "simple",
+    "score": 1,
+    "database": "PostgreSQL",
+    "is_hybrid": false,
+    "entities_found": [
+      "infrastructure"
+    ]
+  },
+  {
+    "query": "Show all projects with their creation dates",
+    "type": "project",
+    "complexity": "simple",
+    "score": 1,
+    "database": "PostgreSQL",
+    "is_hybrid": false,
+    "entities_found": []
+  },
+  {
+    "query": "What's the status breakdown of all poles?",
+    "type": "infrastructure",
+    "complexity": "simple",
+    "score": 1,
+    "database": "PostgreSQL",
+    "is_hybrid": false,
+    "entities_found": [
+      "infrastructure"
+    ]
+  },
+  {
+    "query": "List the top 10 poles with the most drops",
+    "type": "infrastructure",
+    "complexity": "simple",
+    "score": 1,
+    "database": "PostgreSQL",
+    "is_hybrid": false,
+    "entities_found": [
+      "infrastructure",
+      "numeric"
+    ]
+  },
+  {
+    "query": "How many drops are in the Lawley project?",
+    "type": "infrastructure",
+    "complexity": "complex",
+    "score": 9,
+    "database": "PostgreSQL",
+    "is_hybrid": false,
+    "entities_found": [
+      "infrastructure",
+      "project_codes",
+      "project_names"
+    ]
+  },
+  {
+    "query": "Show active Nokia equipment",
+    "type": "infrastructure",
+    "complexity": "simple",
+    "score": 1,
+    "database": "PostgreSQL",
+    "is_hybrid": false,
+    "entities_found": [
+      "equipment",
+      "status_values"
+    ]
+  },
+  {
+    "query": "List all staff",
+    "type": "personnel",
+    "complexity": "simple",
+    "score": 1,
+    "database": "Firebase",
+    "is_hybrid": false,
+    "entities_found": [
+      "personnel"
+    ]
+  },
+  {
+    "query": "Show all employees",
+    "type": "personnel",
+    "complexity": "simple",
+    "score": 1,
+    "database": "Firebase",
+    "is_hybrid": false,
+    "entities_found": [
+      "personnel"
+    ]
+  },
+  {
+    "query": "Who are the field agents?",
+    "type": "personnel",
+    "complexity": "simple",
+    "score": 1,
+    "database": "Firebase",
+    "is_hybrid": false,
+    "entities_found": [
+      "personnel"
+    ]
+  },
+  {
+    "query": "Which staff member installed the most drops?",
+    "type": "hybrid",
+    "complexity": "complex",
+    "score": 9,
+    "database": "PostgreSQL",
+    "is_hybrid": true,
+    "entities_found": [
+      "infrastructure",
+      "personnel",
+      "status_values"
+    ]
+  },
+  {
+    "query": "Show optical power readings for LAW-001",
+    "type": "infrastructure",
+    "complexity": "complex",
+    "score": 9,
+    "database": "PostgreSQL",
+    "is_hybrid": false,
+    "entities_found": [
+      "measurements",
+      "project_codes",
+      "project_names",
+      "numeric"
+    ]
+  },
+  {
+    "query": "Calculate PON utilization for Ivory Park",
+    "type": "infrastructure",
+    "complexity": "complex",
+    "score": 9,
+    "database": "PostgreSQL",
+    "is_hybrid": false,
+    "entities_found": [
+      "equipment",
+      "project_names"
+    ]
+  },
+  {
+    "query": "Show splice loss measurements this month",
+    "type": "infrastructure",
+    "complexity": "simple",
+    "score": 1,
+    "database": "PostgreSQL",
+    "is_hybrid": false,
+    "entities_found": [
+      "equipment",
+      "measurements",
+      "infrastructure",
+      "temporal"
+    ]
+  },
+  {
+    "query": "List technicians who worked on Mamelodi project",
+    "type": "personnel",
+    "complexity": "complex",
+    "score": 9,
+    "database": "PostgreSQL",
+    "is_hybrid": true,
+    "entities_found": [
+      "personnel",
+      "project_codes",
+      "project_names"
+    ]
+  },
+  {
+    "query": "What's the installation efficiency this week?",
+    "type": "analytical",
+    "complexity": "simple",
+    "score": 2,
+    "database": "PostgreSQL",
+    "is_hybrid": false,
+    "entities_found": [
+      "business",
+      "temporal"
+    ]
+  }
+]
